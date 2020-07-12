@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="interface" />
+        <module name="web_seller" />
+        <module name="service_search" />
+        <module name="domain" />
+        <module name="service_sellerGoods" />
+        <module name="web_portal" />
+        <module name="dao" />
+        <module name="commons" />
+        <module name="solr_util" />
+        <module name="web_manager" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>
