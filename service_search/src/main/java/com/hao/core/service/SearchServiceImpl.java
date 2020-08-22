@@ -1,6 +1,7 @@
 package com.hao.core.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.hao.core.pojo.item.Item;
 import com.hao.core.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,7 @@ import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.*;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -25,14 +23,17 @@ public class SearchServiceImpl implements SearchService {
     private RedisTemplate redisTemplate;
     @Override
     public Map<String, Object> search(Map paramMap) {
+
         System.out.println("paramMap:"+paramMap);
+
         //1.高亮查询
         Map<String, Object> resultMap = highlightSearch(paramMap);
+
 
         //2. 根据查询参数, 到solr中获取对应的分类结果集, 由于分类重复, 所以需要分组去重
         List<String> groupCatagoryList = findGroupCatagoryList(paramMap);
         resultMap.put("categoryList", groupCatagoryList);
-        System.out.println("groupCatagoryList.get(0):"+groupCatagoryList.get(0));
+
 
         //3. 判断paramMap传入参数中是否有分类名称
         String category = String.valueOf(paramMap.get("category"));
@@ -47,6 +48,7 @@ public class SearchServiceImpl implements SearchService {
             resultMap.putAll(specListAndBrandList);
         }
         System.out.println("resultMap:"+resultMap);
+
         return resultMap;
     }
 
@@ -58,6 +60,13 @@ public class SearchServiceImpl implements SearchService {
      * @return
      */
     private Map<String,Object> highlightSearch(Map paramMap){
+        //获取页面点击的分类过滤条件
+        String category = String.valueOf(paramMap.get("category"));
+        //获取页面点击的品牌过滤条件
+        String brand = String.valueOf(paramMap.get("brand"));
+        //获取页面点击的规格过滤条件
+        String spec = String.valueOf(paramMap.get("spec"));
+
         //获取查询条件
         String keywords = String.valueOf(paramMap.get("keywords"));
         System.out.println("keywords:"+keywords);
@@ -68,6 +77,47 @@ public class SearchServiceImpl implements SearchService {
 //-------------------------------------------------------------
         //创建高亮查询对象
         HighlightQuery query = new SimpleHighlightQuery();
+        //条件查询
+        //根据分类过滤查询
+        if (category != null && !"".equals(category)) {
+            //创建过滤查询对象
+            FilterQuery filterQuery = new SimpleFilterQuery();
+            //创建条件对象
+            Criteria filterCriteria = new Criteria("item_category").is(category);
+            //将条件对象放入过滤对象中
+            filterQuery.addCriteria(filterCriteria);
+            //过滤对象放入查询对象中
+            query.addFilterQuery(filterQuery);
+        }
+        //根据品牌过滤查询
+        if (brand != null && !"".equals(brand)) {
+            //创建过滤查询对象
+            FilterQuery filterQuery = new SimpleFilterQuery();
+            //创建条件对象
+            Criteria filterCriteria = new Criteria("item_brand").is(brand);
+            //将条件对象放入过滤对象中
+            filterQuery.addCriteria(filterCriteria);
+            //过滤对象放入查询对象中
+            query.addFilterQuery(filterQuery);
+        }
+        //根据规格过滤查询 spec中的数据格式{网络:移动4G, 内存小大: 16G}
+        if (spec != null && !"".equals(spec)) {
+            Map<String, String> speMap = JSON.parseObject(spec, Map.class);
+            if (speMap != null && speMap.size() > 0) {
+                Set<Map.Entry<String, String>> entries = speMap.entrySet();
+                for (Map.Entry<String, String> entry : entries) {
+                    //创建过滤查询对象
+                    FilterQuery filterQuery = new SimpleFilterQuery();
+                    //创建条件对象
+                    Criteria filterCriteria = new Criteria("item_spec_" + entry.getKey())
+                            .is(entry.getValue());
+                    //将条件对象放入过滤对象中
+                    filterQuery.addCriteria(filterCriteria);
+                    //过滤对象放入查询对象中
+                    query.addFilterQuery(filterQuery);
+                }
+            }
+        }
         //创建高亮选项对象
         HighlightOptions highlightOptions = new HighlightOptions();
         //设置哪个域需要高亮显示

@@ -7,65 +7,67 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>结算页</title>
 	<link rel="icon" href="img/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="css/base.css" />
-    <link rel="stylesheet" type="text/css" href="css/getOrderInfo.css" />
+	<link rel="stylesheet" type="text/css" href="css/base.css" />
+	<link rel="stylesheet" type="text/css" href="css/getOrderInfo.css" />
 </head>
 
 <body>
-<!--页面顶部-->
-<div id="nav-bottom" style="background: white;">
-	<!--顶部-->
-	<div class="nav-top">
-		<div class="top">
-			<div class="py-container" >
-				<div class="shortcut">
-					<ul class="fl">
-						<li class="f-item">您好！</li>
-						<li class="f-item">  请<a href="login.html" target="_blank" style="padding-left: 10px;">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
-					</ul>
-					<ul class="fr">
-						<li class="f-item">我的订单</li>
-						<li class="f-item space"></li>
-						<li class="f-item">我的FM</li>
-						<li class="f-item space"></li>
-						<li class="f-item">FM会员</li>
-						<li class="f-item space"></li>
-						<li class="f-item">企业采购</li>
-						<li class="f-item space"></li>
-						<li class="f-item">客户服务</li>
-						<li class="f-item space"></li>
-						<li class="f-item">客户服务</li>
-						<li class="f-item space"></li>
-						<li class="f-item">网站导航</li>
-					</ul>
+<div id="app">
+	<!--页面顶部-->
+	<div id="nav-bottom" style="background: white;">
+		<!--顶部-->
+		<div class="nav-top">
+			<div class="top">
+				<div class="py-container" >
+					<div class="shortcut">
+						<ul class="fl">
+							<li class="f-item">您好！</li>
+							<li class="f-item">  请<a href="login.html" target="_blank" style="padding-left: 10px;">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+						</ul>
+						<ul class="fr">
+							<li class="f-item">我的订单</li>
+							<li class="f-item space"></li>
+							<li class="f-item">我的FM</li>
+							<li class="f-item space"></li>
+							<li class="f-item">FM会员</li>
+							<li class="f-item space"></li>
+							<li class="f-item">企业采购</li>
+							<li class="f-item space"></li>
+							<li class="f-item">客户服务</li>
+							<li class="f-item space"></li>
+							<li class="f-item">客户服务</li>
+							<li class="f-item space"></li>
+							<li class="f-item">网站导航</li>
+						</ul>
+					</div>
 				</div>
 			</div>
-		</div>
-		<!--头部-->
-		<div class="header" style="border-bottom: none;">
-			<div class="py-container" style="background: white;">
-				<div class="yui3-g Logo">
-					<div class="yui3-u Left logoArea" style="padding-top: 40px;">
-						<img src="img/logo.png" width="60" height="60" alt="" style="float:left; margin-right: 10px;">
-						<div style="font-size: 28px; color: #2b2b2b; margin-top: 18px;">FM商城</div>
-					</div>
-					<div class="yui3-u Center searchArea" style="position: absolute; right: 238px; top: 30px;">
-						<div class="search">
-							<form action="" class="sui-form form-inline">
-								<div class="input-append">
-									<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
-									<a class="sui-btn btn-xlarge btn-danger" href="search.html">搜索</a>
-								</div>
-							</form>
+			<!--头部-->
+			<div class="header" style="border-bottom: none;">
+				<div class="py-container" style="background: white;">
+					<div class="yui3-g Logo">
+						<div class="yui3-u Left logoArea" style="padding-top: 40px;">
+							<img src="img/logo.png" width="60" height="60" alt="" style="float:left; margin-right: 10px;">
+							<div style="font-size: 28px; color: #2b2b2b; margin-top: 18px;">FM商城</div>
+						</div>
+						<div class="yui3-u Center searchArea" style="position: absolute; right: 238px; top: 30px;">
+							<div class="search">
+								<form action="" class="sui-form form-inline">
+									<div class="input-append">
+										<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
+										<a class="sui-btn btn-xlarge btn-danger" href="search.html">搜索</a>
+									</div>
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="cart py-container">
+	<div class="cart py-container">
 		<!--主内容-->
+
 		<div class="checkout py-container">
 			<div class="checkout-tit">
 				<h4 class="tit-txt">填写并核对订单信息</h4>
@@ -79,49 +81,85 @@
 					<div class="addressInfo">
 						<ul class="addr-detail">
 							<li class="addr-item">
-							  <div>
-								<div class="con name selected"><a href="javascript:;" >FMJava<span title="点击取消选择"/>&nbsp;</a></div>
-								<div class="con address">FMJava 江苏省南京市*****102街道 新街口 <span>185****8754</span>
-									<span class="base">默认地址</span>
-									<span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
+								<div v-for="addressItem in addressList">
+									<div :class="['con' ,'name',isSeletedAddress(addressItem)?'selected':'']">
+										<a href="#"  @click="selectAddress(addressItem)">
+											{{addressItem.contact}}
+											<span title="点击取消选择" />&nbsp;
+										</a>
+									</div>
+									<div class="con address">
+										{{addressItem.address}}
+										<span>{{addressItem.mobile}}</span>
+										<span class="base" v-if="addressItem.isDefault=='1'">默认地址</span>
+										<span class="edittext">
+											<a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;
+											<a href="javascript:;">删除</a>
+										</span>
+									</div>
+									<div class="clearfix"></div>
 								</div>
-								<div class="clearfix"></div>
-							  </div>
-							  <div>
-								<div class="con name"><a href="javascript:;">鲁班<span title="点击取消选择"/>&nbsp;</a></div>
-								<div class="con address">鲁** 王************* ***** <span>185****8754</span>
-								<span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
-								</div>
-								<div class="clearfix"></div>
-							  </div>
-							  <div>
-								<div class="con name"><a href="javascript:;">后**<span title="点击取消选择"/>&nbsp</a></div>
-								<div class="con address">后** 王*****************8号楼  <span>185****8754</span>
-								<span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
-								</div>
-								<div class="clearfix"></div>
-							  </div>
 							</li>
 						</ul>
 						<!--添加地址-->
-                          <div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade edit">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
-						        <h4 id="myModalLabel" class="modal-title">添加收货地址</h4>
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
-						        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
-						      </div>
-						    </div>
-						  </div>
+						<div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade edit">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
+										<h4 id="myModalLabel" class="modal-title">添加收货地址</h4>
+									</div>
+									<div class="modal-body">
+										<form action="" class="sui-form form-horizontal">
+											<div class="control-group">
+												<label class="control-label">收货人：</label>
+												<div class="controls">
+													<input type="text" class="input-medium">
+												</div>
+											</div>
+
+											<div class="control-group">
+												<label class="control-label">详细地址：</label>
+												<div class="controls">
+													<input type="text" class="input-large">
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">联系电话：</label>
+												<div class="controls">
+													<input type="text" class="input-medium">
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">邮箱：</label>
+												<div class="controls">
+													<input type="text" class="input-medium">
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">地址别名：</label>
+												<div class="controls">
+													<input type="text" class="input-medium">
+												</div>
+												<div class="othername">
+													建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
+												</div>
+											</div>
+
+										</form>
+
+
+									</div>
+									<div class="modal-footer">
+										<button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
+										<button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
+									</div>
+								</div>
+							</div>
 						</div>
-						 <!--确认地址-->
+						<!--确认地址-->
 					</div>
 					<div class="hr"></div>
-					
 				</div>
 				<div class="hr"></div>
 				<!--支付和送货-->
@@ -131,8 +169,8 @@
 					</div>
 					<div class="step-cont">
 						<ul class="payType">
-							<li class="selected">微信付款<span title="点击取消选择"></span></li>
-							<li>货到付款<span title="点击取消选择"></span></li>
+							<li class="selected" @click="selectPayType('1')">微信付款<span title="点击取消选择"></span></li>
+							<li @click="selectPayType('1')">货到付款<span title="点击取消选择"></span></li>
 						</ul>
 					</div>
 					<div class="hr"></div>
@@ -142,55 +180,46 @@
 					<div class="step-cont">
 						<ul class="send-detail">
 							<li>
-								<div class="sendGoods">
-									<ul class="yui3-g">
-										<li class="yui3-u-1-6">
-											<span><img src="img/cart1.jpg"/></span>
-										</li>
-										<li class="yui3-u-7-12">
-											<div class="desc">	华为 HUAWEI nova 5 Pro 前置3200万人像超级夜景4800万AI四摄麒麟980</div>
-											<div class="seven">7天无理由退款</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="price">￥2999.00</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="num">X1</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="exit">有货</div>
-										</li>
-									</ul>
-								</div>
-							</li>
-							<li>
-								<div class="sendGoods">
-									<ul class="yui3-g">
-										<li class="yui3-u-1-6">
-											<span><img src="img/cart2.jpg"/></span>
-										</li>
-										<li class="yui3-u-7-12">
-											<div class="desc">	小米9 4800万超广角三摄 6GB+128GB深空灰 骁龙855 全网通</div>
-											<div class="seven">7天无理由退款</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="price">￥2799.00</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="num">X1</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="exit">有货</div>
-										</li>
-									</ul>
-								</div>
-							</li>
 
+
+								<div class="sendGoods" v-for="cart in cartList">
+									<ul class="yui3-g" v-for="item in cart.orderItemList">
+										<li class="yui3-u-1-6">
+											<span><img width="100px" height="100px" :src="item.picPath"/></span>
+										</li>
+										<li class="yui3-u-7-12">
+											<div class="desc">{{item.title}}</div>
+											<div class="seven">7天无理由退货</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="price">￥{{item.price}}</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="num">X{{item.num}}</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="exit">有货</div>
+										</li>
+									</ul>
+								</div>
+
+							</li>
+							<li></li>
+							<li></li>
 						</ul>
 					</div>
 					<div class="hr"></div>
 				</div>
-
+				<div class="linkInfo">
+					<div class="step-tit">
+						<h5>发票信息</h5>
+					</div>
+					<div class="step-cont">
+						<span></span>
+						<span>个人</span>
+						<span>明细</span>
+					</div>
+				</div>
 				<div class="cardInfo">
 					<div class="step-tit">
 						<h5>使用优惠/抵用</h5>
@@ -201,144 +230,242 @@
 		<div class="order-summary">
 			<div class="static fr">
 				<div class="list">
-					<span><i class="number">2</i>件商品，总商品金额</span>
-					<em class="allprice">¥5798.00</em>
-				</div>
-				<div class="list">
-					<span>返现：</span>
-					<em class="money">0.00</em>
-				</div>
-				<div class="list">
-					<span>运费：</span>
-					<em class="transport">10.00</em>
+					<span><i class="number">{{totalValue.totalNum}}</i>件商品，总商品金额</span>
+					<em class="allprice">¥{{totalValue.totalMoney.toFixed(2)}}</em>
 				</div>
 			</div>
 		</div>
 		<div class="clearfix trade">
-			<div class="fc-price">应付金额:　<span class="price">¥5808.00</span></div>
-			<div class="fc-receiverInfo">寄送至:江苏省南京市*****102街道 收货人：FMJava 185****8754</div>
+			<div class="fc-price">应付金额:　<span class="price">¥{{totalValue.totalMoney.toFixed(2)}}</span></div>
+			<div class="fc-receiverInfo">寄送至:{{address.address}} 收货人：{{address.contact}} 电话:{{address.mobile}}</div>
 		</div>
 		<div class="submit">
-			<a class="sui-btn btn-danger btn-xlarge" href="pay.html">提交订单</a>
+			<a class="sui-btn btn-danger btn-xlarge" @click="submitOrder()">提交订单</a>
 		</div>
 	</div>
-<!--页面底部-->
-<div class="clearfix footer">
-	<div class="py-container">
-		<div class="footlink">
-			<div class="Mod-service">
-				<div class="mod_service" clstag="h|keycount|btm|btmnavi_null01">
-					<div class="grid_c1 mod_service_inner">
-						<ul class="mod_service_list">
-							<li class="mod_service_item">
-								<div class="mod_service_unit">
-									<h5 class="mod_service_tit mod_service_duo">多</h5>
-									<p class="mod_service_txt">品类齐全，轻松购物</p>
-								</div></li>
-							<li class="mod_service_item">
-								<div class="mod_service_unit">
-									<h5 class="mod_service_tit mod_service_kuai">快</h5>
-									<p class="mod_service_txt">多仓直发，极速配送</p>
-								</div></li>
-							<li class="mod_service_item">
-								<div class="mod_service_unit">
-									<h5 class="mod_service_tit mod_service_hao">好</h5>
-									<p class="mod_service_txt">正品行货，精致服务</p>
-								</div></li>
-							<li class="mod_service_item">
-								<div class="mod_service_unit">
-									<h5 class="mod_service_tit mod_service_sheng">省</h5>
-									<p class="mod_service_txt">天天低价，畅选无忧</p>
-								</div></li>
-						</ul>
+
+	<!--页面底部-->
+	<div class="clearfix footer">
+		<div class="py-container">
+			<div class="footlink">
+				<div class="Mod-service">
+					<div class="mod_service" clstag="h|keycount|btm|btmnavi_null01">
+						<div class="grid_c1 mod_service_inner">
+							<ul class="mod_service_list">
+								<li class="mod_service_item">
+									<div class="mod_service_unit">
+										<h5 class="mod_service_tit mod_service_duo">多</h5>
+										<p class="mod_service_txt">品类齐全，轻松购物</p>
+									</div></li>
+								<li class="mod_service_item">
+									<div class="mod_service_unit">
+										<h5 class="mod_service_tit mod_service_kuai">快</h5>
+										<p class="mod_service_txt">多仓直发，极速配送</p>
+									</div></li>
+								<li class="mod_service_item">
+									<div class="mod_service_unit">
+										<h5 class="mod_service_tit mod_service_hao">好</h5>
+										<p class="mod_service_txt">正品行货，精致服务</p>
+									</div></li>
+								<li class="mod_service_item">
+									<div class="mod_service_unit">
+										<h5 class="mod_service_tit mod_service_sheng">省</h5>
+										<p class="mod_service_txt">天天低价，畅选无忧</p>
+									</div></li>
+							</ul>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="clearfix Mod-list">
-				<div class="yui3-g">
-					<div class="yui3-u-1-6">
-						<h5 style="font-size: 15px;">购物指南</h5>
-						<ul class="unstyled">
-							<li>购物流程</li>
-							<li>会员介绍</li>
-							<li>生活旅行/团购</li>
-							<li>常见问题</li>
-							<li>购物指南</li>
-						</ul>
-					</div>
-					<div class="yui3-u-1-6">
-						<h5 style="font-size: 15px;">配送方式</h5>
-						<ul class="unstyled">
-							<li>上门自提</li>
-							<li>211限时达</li>
-							<li>配送服务查询</li>
-							<li>配送费收取标准</li>
-							<li>海外配送</li>
-						</ul>
-					</div>
-					<div class="yui3-u-1-6">
-						<h5 style="font-size: 15px;">支付方式</h5>
-						<ul class="unstyled">
-							<li>货到付款</li>
-							<li>在线支付</li>
-							<li>分期付款</li>
-							<li>邮局汇款</li>
-							<li>公司转账</li>
-						</ul>
-					</div>
-					<div class="yui3-u-1-6">
-						<h5 style="font-size: 15px;">售后服务</h5>
-						<ul class="unstyled">
-							<li>售后政策</li>
-							<li>价格保护</li>
-							<li>退款说明</li>
-							<li>返修/退换货</li>
-							<li>取消订单</li>
-						</ul>
-					</div>
-					<div class="yui3-u-1-6">
-						<h5 style="font-size: 15px;">特色服务</h5>
-						<ul class="unstyled">
-							<li>夺宝岛</li>
-							<li>DIY装机</li>
-							<li>延保服务</li>
-						</ul>
-					</div>
-					<div class="yui3-u-1-6">
-						<div class="mod_help_cover">
-							<h5 class="mod_help_cover_tit">自营覆盖区县</h5>
-							<div class="mod_help_cover_con">
-								<p class="mod_help_cover_info">已向全国2661个区县提供自营配送服务，支持货到付款、POS机刷卡和售后上门服务。</p>
-								<p class="mod_help_cover_more">
-									<a href="//help.jd.com/user/issue/103-983.html" target="_blank">查看详情
-									</a>
-								</p>
+				<div class="clearfix Mod-list">
+					<div class="yui3-g">
+						<div class="yui3-u-1-6">
+							<h5 style="font-size: 15px;">购物指南</h5>
+							<ul class="unstyled">
+								<li>购物流程</li>
+								<li>会员介绍</li>
+								<li>生活旅行/团购</li>
+								<li>常见问题</li>
+								<li>购物指南</li>
+							</ul>
+						</div>
+						<div class="yui3-u-1-6">
+							<h5 style="font-size: 15px;">配送方式</h5>
+							<ul class="unstyled">
+								<li>上门自提</li>
+								<li>211限时达</li>
+								<li>配送服务查询</li>
+								<li>配送费收取标准</li>
+								<li>海外配送</li>
+							</ul>
+						</div>
+						<div class="yui3-u-1-6">
+							<h5 style="font-size: 15px;">支付方式</h5>
+							<ul class="unstyled">
+								<li>货到付款</li>
+								<li>在线支付</li>
+								<li>分期付款</li>
+								<li>邮局汇款</li>
+								<li>公司转账</li>
+							</ul>
+						</div>
+						<div class="yui3-u-1-6">
+							<h5 style="font-size: 15px;">售后服务</h5>
+							<ul class="unstyled">
+								<li>售后政策</li>
+								<li>价格保护</li>
+								<li>退款说明</li>
+								<li>返修/退换货</li>
+								<li>取消订单</li>
+							</ul>
+						</div>
+						<div class="yui3-u-1-6">
+							<h5 style="font-size: 15px;">特色服务</h5>
+							<ul class="unstyled">
+								<li>夺宝岛</li>
+								<li>DIY装机</li>
+								<li>延保服务</li>
+							</ul>
+						</div>
+						<div class="yui3-u-1-6">
+							<div class="mod_help_cover">
+								<h5 class="mod_help_cover_tit">自营覆盖区县</h5>
+								<div class="mod_help_cover_con">
+									<p class="mod_help_cover_info">已向全国2661个区县提供自营配送服务，支持货到付款、POS机刷卡和售后上门服务。</p>
+									<p class="mod_help_cover_more">
+										<a href="//help.jd.com/user/issue/103-983.html" target="_blank">查看详情
+										</a>
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="Mod-copyright">
-				<ul class="helpLink">
-					<li>关于我们<span class="space"></span></li>
-					<li>联系我们<span class="space"></span></li>
-					<li>联系客服<span class="space"></span></li>
-					<li>合作招商<span class="space"></span></li>
-					<li>商家帮助<span class="space"></span></li>
-					<li>营销中心<span class="space"></span></li>
-					<li>友情链接<span class="space"></span></li>
-					<li>销售联盟<span class="space"></span></li>
-					<li>友情链接<span class="space"></span></li>
-					<li>隐私政策</li>
-				</ul>
-				<p>京公网安备 1****002000088号|京ICP证0*****9号|互联网药品信息服务资格证编号(京)-经营性-2014-0008|新出发京零 字第大1*****2号</p>
-				<p>京ICP备0*****1号京公网安备1***********2</p>
+				<div class="Mod-copyright">
+					<ul class="helpLink">
+						<li>关于我们<span class="space"></span></li>
+						<li>联系我们<span class="space"></span></li>
+						<li>联系客服<span class="space"></span></li>
+						<li>合作招商<span class="space"></span></li>
+						<li>商家帮助<span class="space"></span></li>
+						<li>营销中心<span class="space"></span></li>
+						<li>友情链接<span class="space"></span></li>
+						<li>销售联盟<span class="space"></span></li>
+						<li>友情链接<span class="space"></span></li>
+						<li>隐私政策</li>
+					</ul>
+					<p>京公网安备 1****002000088号|京ICP证0*****9号|互联网药品信息服务资格证编号(京)-经营性-2014-0008|新出发京零 字第大1*****2号</p>
+					<p>京ICP备0*****1号京公网安备1***********2</p>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="js/pages/getOrderInfo.js"></script>
+<script type="text/javascript" src="plugins/vue/vuejs-2.5.16.js"></script>
+<script type="text/javascript" src="plugins/vue/axios-0.18.0.js"></script>
+<script type="text/javascript" src="plugins/vue/qs.js"></script>
 </body>
+<script>
+	new Vue({
+		el:"#app",
+		data:{
+			addressList:[],//地址列表
+			address:{},//当前地址
+			cartList:[],//购物车列表
+			totalValue:{
+				totalNum:0,
+				totalMoney:0
+			}, //总价
+			order:{
+				paymentType:1,
+				address:'',
+				mobile:'',
+				contact:''
+			}
+		},
+		methods: {
+			loadAddress: function (categoryId) {
+				var _this = this;
+				axios.post("/address/findListByLoginUser.do")
+						.then(function (response) {
+							_this.addressList = response.data;
+							for (var i = 0; i < _this.addressList.length; i++) {
+								if (_this.addressList[i].isDefault == '1') {
+									_this.address = _this.addressList[i];
+									break;
+								}
+							}
+						}).catch(function (reason) {
+					console.log(reason);
+				})
+			},
+			isSeletedAddress:function(address){
+				if(address==this.address){
+					return true;
+				}else{
+					return false;
+				}
+			},
+			selectAddress:function(address){
+				this.address=address;
+				console.log(address);
+			},
+			selectPayType:function(type){
+				this.order.paymentType=type;
+			},
+			loadCartData: function (categoryId) {
+				var _this = this;
+				axios.post("/cart/findCartList.do")
+						.then(function (response) {
+							_this.cartList = response.data;
+							_this.totalValue = _this.sum(_this.cartList);
+							console.log(_this.totalValue);
+							console.log(_this.cartList);
+						}).catch(function (reason) {
+					console.log(reason);
+				})
+			},
+			sum:function(cartList){
+				var totalValue={totalNum:0,totalMoney:0 };
+				for(var i=0;i<cartList.length ;i++){
+					var cart=cartList[i];//购物车对象
+					for(var j=0;j<cart.orderItemList.length;j++){
+						var orderItem=  cart.orderItemList[j];//购物车明细
+						totalValue.totalNum+=orderItem.num;//累加数量
+						totalValue.totalMoney+=orderItem.price*orderItem.num;//累加金额
+
+					}
+				}
+				return totalValue;
+			},
+			submitOrder:function () {
+				this.order.receiverAreaName=this.address.address;//地址
+				this.order.receiverMobile=this.address.mobile;//手机
+				this.order.receiver=this.address.contact;//联系人
+				var _this = this;
+				axios.post("order/add.do",this.order).then(function (response) {
+					if(response.data.success){
+						//页面跳转
+						if(_this.order.paymentType=='1'){//如果是微信支付，跳转到支付页面
+							location.href="pay.html";
+						}else{//如果货到付款，跳转到提示页面
+							location.href="paysuccess.html";
+						}
+					}else{
+						alert(response.data.message);	//也可以跳转到提示页面
+					}
+				}).catch(function (reason) {
+					console.log(reason);
+				})
+			}
+		},
+		created: function() {
+			this.loadAddress();
+			this.loadCartData();
+		}
+	});
+</script>
 
 </html>

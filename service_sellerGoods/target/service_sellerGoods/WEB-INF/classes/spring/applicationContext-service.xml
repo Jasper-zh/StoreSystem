@@ -12,7 +12,7 @@
     <dubbo:protocol name="dubbo" port="20881"></dubbo:protocol>
 
     <!-- 给当前服务起个名 -->
-    <dubbo:application name="mystore-sellergoods-service"/>
+    <dubbo:application name="sellergoods-service"/>
 
     <!-- 配置包扫描, 在这个包下面的service实现类上写@service注解才会生效  -->
     <dubbo:annotation package="com.hao.core.service" />

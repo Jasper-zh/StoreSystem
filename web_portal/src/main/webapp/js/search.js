@@ -102,6 +102,7 @@ new Vue({
             }else{//用户点击的是规格
                 Vue.set(this.searchMap.spec,key,value);
             }
+            this.search();
             console.log(this.searchMap);
         },
         //撤销搜索项
@@ -112,6 +113,19 @@ new Vue({
             }else{//用户点击的是规格
                 Vue.delete(this.searchMap.spec,key);
             }
+        },
+        //判断关键字是否是品牌
+        keywordsIsBrand:function(){
+            for(var i=0;i< this.resultMap.brandList.length;i++){
+                //查看当前的搜索关键字是否在品牌列表当中
+                if( this.searchMap.keywords.indexOf( this.resultMap.brandList[i].name )>=0  ){
+                    return true;
+                }
+            }
+            return false;
+        },
+        openDetailPage:function(goodsId){
+            window.open("http://localhost:8086/"+goodsId+".html");
         }
 
     },

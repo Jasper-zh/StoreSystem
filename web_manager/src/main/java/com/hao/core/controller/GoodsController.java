@@ -5,17 +5,29 @@ import com.hao.core.pojo.entity.GoodsEntity;
 import com.hao.core.pojo.entity.PageResult;
 import com.hao.core.pojo.entity.Result;
 import com.hao.core.pojo.good.Goods;
+import com.hao.core.pojo.item.Item;
+import com.hao.core.service.CmsService;
 import com.hao.core.service.GoodsService;
+import com.hao.core.service.SolrManagerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/goods")
 public class GoodsController {
     @Reference
     private GoodsService goodsService;
+    @Reference
+    private SolrManagerService solrManagerService;
+    @Reference
+    private CmsService cmsService;
+
     @RequestMapping("/add")
     public Result add(@RequestBody GoodsEntity goodsEntity) {
         try {
@@ -77,6 +89,21 @@ public class GoodsController {
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "状态修改失败!");
+        }
+    }
+    /**
+     * 测试生成静态页面
+     * @param goodsId   商品id
+     * @return
+     */
+    @RequestMapping("/testPage")
+    public Boolean testCreatePage(Long goodsId) {
+        try {
+            cmsService.createStaticPage(goodsId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

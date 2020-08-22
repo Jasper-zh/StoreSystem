@@ -6,16 +6,21 @@ import com.hao.core.pojo.entity.PageResult;
 import com.hao.core.pojo.entity.Result;
 import com.hao.core.pojo.good.Goods;
 import com.hao.core.service.GoodsService;
+import com.hao.core.service.SolrManagerService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/goods")
 public class GoodsController {
     @Reference
     private GoodsService goodsService;
+    @Reference
+    SolrManagerService solrManagerService;
     @RequestMapping("/add")
     public Result add(@RequestBody GoodsEntity goodsEntity) {
         try {
@@ -61,6 +66,7 @@ public class GoodsController {
     }
     @RequestMapping("/delete")
     public Result delete(Long[] ids) {
+        solrManagerService.deleteItemByGoodsId(Arrays.asList(ids));
         try {
             goodsService.delete(ids);
             return  new Result(true, "删除成功!");

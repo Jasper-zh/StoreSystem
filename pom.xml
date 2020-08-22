@@ -19,6 +19,11 @@
         <module>web_portal</module>
         <module>service_search</module>
         <module>solr_util</module>
+        <module>service_page</module>
+        <module>web_user</module>
+        <module>service_user</module>
+        <module>service_sms</module>
+        <module>service_buyer</module>
     </modules>
 
     <!-- 集中定义依赖版本号 -->

@@ -12,6 +12,7 @@
 </head>
 
 <body>
+<div id="app">
 <!--页面顶部-->
 <div id="nav-bottom" style="background: white;">
 	<!--顶部-->
@@ -77,68 +78,37 @@
 				<div class="yui3-u-1-8">小计（元）</div>
 				<div class="yui3-u-1-8">操作</div>
 			</div>
-			<div class="cart-item-list">
+
+			<div class="cart-item-list" v-for="carItem in cartList" >
 				<div class="cart-shop">
-					<input type="checkbox" name="" value="" />
-					<span class="shopname self">FM自营</span>
+					<input type="checkbox" name=""/>
+					<span class="shopname self">{{carItem.sellerName}}</span>
 				</div>
 				<div class="cart-body">
-					<div class="cart-list">
+					<div class="cart-list" v-for="orderItem in carItem.orderItemList">
 						<ul class="goods-list yui3-g">
 							<li class="yui3-u-1-24">
-								<input type="checkbox" name="" value="" />
+								<input type="checkbox" name="" />
 							</li>
 							<li class="yui3-u-11-24">
 								<div class="good-item">
-									<div class="item-img"><img src="img/cart1.jpg" /></div>
-									<div class="item-msg">
-										华为 HUAWEI nova 5 Pro 前置3200万人像超级夜景4800万AI四摄麒麟980
-										绮境森林
-										8GB+128GB
-									</div>
+									<div class="item-img"><img :src="orderItem.picPath" /></div>
+									<div class="item-msg">{{orderItem.title}}</div>
 								</div>
 							</li>
-
-							<li class="yui3-u-1-8"><span class="price">2999.00</span></li>
+							<li class="yui3-u-1-8"><span class="price">{{orderItem.price}}</span></li>
 							<li class="yui3-u-1-8">
 								<a href="javascript:void(0)" class="increment mins">-</a>
-								<input autocomplete="off" type="text" value="1" minnum="1" class="itxt" />
+								<input autocomplete="off"
+									   type="text"
+									   value="1"
+									   minnum="1"
+									   class="itxt"
+									   v-model="orderItem.num"
+								/>
 								<a href="javascript:void(0)" class="increment plus">+</a>
 							</li>
-							<li class="yui3-u-1-8"><span class="sum">2999.00</span></li>
-							<li class="yui3-u-1-8">
-								<a href="#none">删除</a><br />
-								<a href="#none">移到我的关注</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="cart-item-list">
-				<div class="cart-shop">
-					<input type="checkbox" name=""  value="" />
-					<span class="shopname">小米专营店</span>
-				</div>
-				<div class="cart-body">
-					<div class="cart-list">
-						<ul class="goods-list yui3-g">
-							<li class="yui3-u-1-24">
-								<input type="checkbox" name="" value="" />
-							</li>
-							<li class="yui3-u-11-24">
-								<div class="good-item">
-									<div class="item-img"><img src="img/cart2.jpg" /></div>
-									<div class="item-msg">小米9 4800万超广角三摄 6GB+128GB深空灰 骁龙855 全网通</div>
-								</div>
-							</li>
-
-							<li class="yui3-u-1-8"><span class="price">2799.00</span></li>
-							<li class="yui3-u-1-8">
-								<a href="javascript:void(0)" class="increment mins">-</a>
-								<input autocomplete="off" type="text" value="1" minnum="1" class="itxt" />
-								<a href="javascript:void(0)" class="increment plus">+</a>
-							</li>
-							<li class="yui3-u-1-8"><span class="sum">2799.00</span></li>
+							<li class="yui3-u-1-8"><span class="sum">{{orderItem.price * orderItem.num}}</span></li>
 							<li class="yui3-u-1-8">
 								<a href="#none">删除</a><br />
 								<a href="#none">移到我的关注</a>
@@ -160,13 +130,12 @@
 
 			</div>
 			<div class="toolbar" style="margin-right: 100px;">
-				<div class="chosed">已选择<span>0</span>件商品</div>
+				<div class="chosed">已选择<span>{{totalValue.totalNum}}</span>件商品</div>
 				<div class="sumprice">
-					<span><em>总价（不含运费） ：</em><i class="summoney">¥16283.00</i></span>
-					<span><em>已节省：</em><i>-¥20.00</i></span>
+					<span><em>总价（不含运费） ：</em><i class="summoney">¥{{totalValue.totalMoney}}</i></span>
 				</div>
-				<div class="sumbtn" style="height: 45px; position: absolute; right: 350px;top: 570px; z-index: 9999;">
-					<a class="sum-btn" href="getOrderInfo.html">结算</a>
+				<div class="sumbtn">
+					<a class="sum-btn" href="http://localhost:8085/getOrderInfo.html" target="_blank">结算</a>
 				</div>
 			</div>
 
@@ -300,8 +269,11 @@
 		</div>
 	</div>
 </div>
-
+</div>
 <script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
 </body>
-
+<script type="text/javascript" src="plugins/vue/vuejs-2.5.16.js"></script>
+<script type="text/javascript" src="plugins/vue/axios-0.18.0.js"></script>
+<script type="text/javascript" src="plugins/vue/qs.js"></script>
+<script type="text/javascript" src="js/cart.js"></script>
 </html>

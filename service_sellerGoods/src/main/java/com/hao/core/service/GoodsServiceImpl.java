@@ -1,5 +1,6 @@
 package com.hao.core.service;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
@@ -20,14 +21,19 @@ import com.hao.core.pojo.item.Item;
 import com.hao.core.pojo.item.ItemCat;
 import com.hao.core.pojo.item.ItemQuery;
 import com.hao.core.pojo.seller.Seller;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -45,6 +51,16 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private GoodsDao goodsDao;
 
+    @Autowired
+    private JmsTemplate jmsTemplate;
+    //为商品上架使用
+    @Autowired
+    private ActiveMQTopic topicPageAndSolrDestination;
+    //为商品下架使用
+    @Autowired
+    private ActiveMQQueue queueSolrDeleteDestination;
+
+
 
     public void add(GoodsEntity goodsEntity) {
         //1. 保存商品对象
@@ -61,12 +77,14 @@ public class GoodsServiceImpl implements GoodsService {
         insertItem(goodsEntity);
     }
     public void insertItem(GoodsEntity goodsEntity) {
-        if ("1".equals(goodsEntity.getGoods().getIsEnableSpec())) {//判断是否有库存规格
             //有勾选规格复选框
             if (goodsEntity.getItemList() != null) {
+                BigDecimal price = goodsEntity.getGoods().getPrice();
+                System.out.println("价格："+price);
                 for (Item item : goodsEntity.getItemList()) {
                     //库存标题, 由商品名 + 规格组成具体的库存标题, 供消费者搜索使用, 可以搜索的更精确
                     String title = goodsEntity.getGoods().getGoodsName();
+
                     //从库存对象中获取前端传入的json格式规格字符串, 例如: {"机身内存":"16G","网络":"联通3G"}
                     String specJsonStr = item.getSpec();
                     //将json格式字符串转换成对象
@@ -78,25 +96,13 @@ public class GoodsServiceImpl implements GoodsService {
                     }
                     //设置标题
                     item.setTitle(title);
+                    //设置价格
+                    item.setPrice(price);
                     //设置库存对象的属性值
                     setItemValue(goodsEntity, item);
                     itemDao.insertSelective(item);
                 }
-            }
-        } else {
-            //没有勾选复选框, 没有库存数据, 但是我们需要初始化一条, 不然前端有可能报错
-            Item item = new Item();
-            //价格
-            item.setPrice(new BigDecimal("99999999999"));
-            //库存量
-            item.setNum(0);
-            //初始化规格
-            item.setSpec("{}");
-            //标题
-            item.setTitle(goodsEntity.getGoods().getGoodsName());
-            //设置库存对象的属性值
-            setItemValue(goodsEntity, item);
-            itemDao.insertSelective(item);
+
         }
     }
     private Item setItemValue(GoodsEntity goodsEntity, Item item) {
@@ -187,21 +193,30 @@ public class GoodsServiceImpl implements GoodsService {
         //4. 添加库存集合数据
         insertItem(goodsEntity);
     }
-    @Override
     public void delete(Long[] ids) {
         if (ids != null) {
-            for (Long id : ids) {
+            for (final Long id : ids) {
+                // 1. 到数据库中对商品进行逻辑删除
                 Goods goods = new Goods();
                 goods.setId(id);
                 goods.setIsDelete("1");
                 goodsDao.updateByPrimaryKeySelective(goods);
+                //2 将商品id作为消息发送给消息服务器
+                jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+                    @Override
+                    public Message createMessage(Session session) throws JMSException {
+                        TextMessage textMessage = session.createTextMessage(String.valueOf(id));
+                        return textMessage;
+                    }
+                });
+
             }
         }
     }
     @Override
     public void updateStatus(Long[] ids, String status) {
         if (ids != null) {
-            for (Long id : ids) {
+            for (final Long id : ids) {
                 //1. 根据商品id修改商品对象状态码
                 Goods goods  = new Goods();
                 goods.setId(id);
@@ -214,8 +229,34 @@ public class GoodsServiceImpl implements GoodsService {
                 ItemQuery.Criteria criteria = query.createCriteria();
                 criteria.andGoodsIdEqualTo(id);
                 itemDao.updateByExampleSelective(item, query);
+                /**
+                 * 将商品id作为消息发送给消息服务器
+                 */
+                if ("2".equals(status)) {
+                    jmsTemplate.send(topicPageAndSolrDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            TextMessage textMessage = session.createTextMessage(String.valueOf(id));
+                            return textMessage;
+                        }
+                    });
+                }
             }
         }
+    }
+    /**
+     * 根据商品id和状态查询库存
+     * @param ids 商品id集合
+     * @param status  商品状态
+     * @return
+     */
+    public List<Item> findItemByGoodsIdAndStatus(Long[]ids,String status){
+        ItemQuery query = new ItemQuery();
+        ItemQuery.Criteria criteria = query.createCriteria();
+        criteria.andStatusEqualTo(status);
+        criteria.andGoodsIdIn(Arrays.asList(ids));
+        List<Item> items = itemDao.selectByExample(query);
+        return items;
     }
 
 }

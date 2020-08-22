@@ -68,7 +68,7 @@
     <!-- 给当前服务起个名 -->
     <dubbo:application name="web_seller" />
     <!-- 配置连接zookeeper地址  -->
-    <dubbo:registry address="zookeeper://192.168.0.199:2181"/>
+    <dubbo:registry address="zookeeper://192.168.0.198:2181"/>
     <!--注入接口-->
     <dubbo:reference id="sellerService" interface="com.hao.core.service.SellerService"></dubbo:reference>
 
